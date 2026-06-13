@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Maxx Rental-Cars App</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Maxx Cars">
+    <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/180px-Apple_logo_black.svg.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Montserrat:wght@700;800&display=swap');
+        :root { --bg-dark: #050b14; --bg-card: #0f172a; --accent-blue: #2563eb; --accent-glow: rgba(37, 99, 235, 0.5); --text-main: #f8fafc; --text-muted: #94a3b8; }
+        body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--text-main); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; overflow: hidden; }
+        #app-container { width: 100%; max-width: 414px; height: 100vh; max-height: 896px; background-color: var(--bg-dark); position: relative; overflow: hidden; box-shadow: 0 0 50px rgba(37, 99, 235, 0.1); display: flex; flex-direction: column; }
+        @media (min-width: 415px) { #app-container { height: 90vh; border-radius: 40px; border: 8px solid #1e293b; } }
+        h1, h2, h3, .brand-font { font-family: 'Montserrat', sans-serif; }
+        .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; background-color: var(--bg-dark); animation: fadeIn 0.3s ease-out; overflow-y: auto; padding-bottom: 20px; }
+        .screen.active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .btn-primary { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; border-radius: 999px; padding: 16px 24px; font-weight: 600; text-align: center; transition: all 0.2s; box-shadow: 0 4px 15px var(--accent-glow); width: 100%; border: none; cursor: pointer; }
+        .btn-primary:active { transform: scale(0.98); }
+        .option-card { background: var(--bg-card); border: 2px solid transparent; border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 16px; cursor: pointer; transition: all 0.2s; }
+        .option-card.selected { border-color: var(--accent-blue); background: rgba(37, 99, 235, 0.1); }
+        .option-pill { background: var(--bg-card); border: 1px solid #334155; border-radius: 999px; padding: 10px 20px; cursor: pointer; transition: all 0.2s; text-align: center; flex: 1; font-size: 14px; display: flex; justify-content: center; align-items: center; }
+        .option-pill.selected { background: var(--accent-blue); border-color: var(--accent-blue); color: white; }
+        .progress-bar { height: 4px; background: #1e293b; border-radius: 2px; margin: 20px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--accent-blue); transition: width 0.3s ease; }
+        .ai-radar { width: 150px; height: 150px; border-radius: 50%; border: 2px solid var(--accent-blue); position: relative; margin: 40px auto; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 30px var(--accent-glow); }
+        .ai-radar::before { content: ''; position: absolute; width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(transparent, transparent, transparent, rgba(37, 99, 235, 0.5)); animation: spin 2s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .top-nav { padding: 20px 20px 10px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--bg-dark); z-index: 10; }
+        .splash-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=600&q=80'); background-size: cover; background-position: center; opacity: 0.3; z-index: -1; }
+        .splash-gradient { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent, var(--bg-dark) 80%); z-index: -1; }
+        .proposal-card { background: var(--bg-card); border: 1px solid #334155; border-radius: 16px; overflow: hidden; margin-bottom: 16px; transition: transform 0.2s; }
+        .proposal-card:active { transform: scale(0.98); }
+        .proposal-img-wrapper { width: 100%; height: 140px; position: relative; }
+        .proposal-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        .proposal-img-wrapper::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 40%; background: linear-gradient(to top, var(--bg-card), transparent); }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <div id="screen-splash" class="screen active" style="justify-content: flex-end; padding: 30px;">
+        <div class="splash-bg"></div><div class="splash-gradient"></div>
+        <div class="mb-auto mt-10 text-center"><h1 class="text-4xl text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600 tracking-wider">MAXX</h1><p class="brand-font text-sm tracking-widest text-blue-400">RENTAL-CARS</p></div>
+        <div class="mb-10"><h2 class="text-4xl leading-tight mb-4">Wynajmij auto<br><span class="text-blue-500">w 60 sekund.</span></h2><p class="text-gray-400 text-lg">Bez rozmów. Bez stresu.<br>Po prostu jedź.</p></div>
+        <button class="btn-primary mb-4 flex justify-center items-center gap-2" onclick="startAIQuiz()">Zacznij teraz <i class="fa-solid fa-arrow-right"></i></button>
+        <p class="text-center text-sm text-gray-500">Masz konto? <span class="text-blue-400 font-semibold">Zaloguj się</span></p>
+    </div>
+
+    <div id="screen-quiz-1" class="screen p-5">
+        <div class="top-nav px-0"><i class="fa-solid fa-arrow-left text-xl cursor-pointer" onclick="showScreen('screen-splash')"></i><div class="brand-font text-sm text-blue-400">MAXX AI</div><div class="w-5"></div></div>
+        <p class="text-xs text-gray-400 mb-1">Krok 1 z 3</p><div class="progress-bar"><div class="progress-fill" style="width: 33%"></div></div>
+        <h2 class="text-2xl mb-6">Jakiej podróży potrzebujesz?</h2>
+        <div class="flex flex-col gap-4 overflow-y-auto pb-4" style="max-height: 60vh;">
+            <div class="option-card" onclick="selectOption('purpose', 'city', this)">
+                <div class="w-16 h-16 bg-gray-800 rounded-lg overflow-hidden shrink-0"><img src="https://images.unsplash.com/photo-1449844908441-8829872d2607?w=100&q=80" class="w-full h-full object-cover" alt="Miasto"></div>
+                <div class="flex-1"><h3 class="font-bold text-lg">Miasto</h3><p class="text-xs text-gray-400">Krótkie przejazdy i parkowanie</p></div><div class="check-icon hidden text-blue-500"><i class="fa-solid fa-circle-check text-xl"></i></div>
+            </div>
+            <div class="option-card" onclick="selectOption('purpose', 'route', this)">
+                <div class="w-16 h-16 bg-gray-800 rounded-lg overflow-hidden shrink-0"><img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=100&q=80" class="w-full h-full object-cover" alt="Trasa"></div>
+                <div class="flex-1"><h3 class="font-bold text-lg">Trasa / Wyjazd</h3><p class="text-xs text-gray-400">Dłuższe dystanse i komfort</p></div><div class="check-icon hidden text-blue-500"><i class="fa-solid fa-circle-check text-xl"></i></div>
+            </div>
+            <div class="option-card" onclick="selectOption('purpose', 'mountains', this)">
+                <div class="w-16 h-16 bg-gray-800 rounded-lg overflow-hidden shrink-0"><img src="https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=100&q=80" class="w-full h-full object-cover" alt="Góry"></div>
+                <div class="flex-1"><h3 class="font-bold text-lg">Trudne warunki</h3><p class="text-xs text-gray-400">Większa moc i teren (4x4)</p></div><div class="check-icon hidden text-blue-500"><i class="fa-solid fa-circle-check text-xl"></i></div>
+            </div>
+            <div class="option-card border-blue-500/30 bg-blue-900/10" onclick="selectOption('purpose', 'sport', this)">
+                <div class="w-16 h-16 bg-gray-800 rounded-lg overflow-hidden shrink-0 relative"><img src="https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=100&q=80" class="w-full h-full object-cover" alt="Sport"></div>
+                <div class="flex-1"><h3 class="font-bold text-lg text-blue-400">Sport / Emocje</h3><p class="text-xs text-gray-400">Supersamochody i adrenalina</p></div><div class="check-icon hidden text-blue-500"><i class="fa-solid fa-circle-check text-xl"></i></div>
+            </div>
+        </div>
+        <div class="mt-auto pt-4"><button class="btn-primary opacity-50 cursor-not-allowed" id="btn-next-1" onclick="nextQuizStep(2)" disabled>Dalej</button></div>
+    </div>
+
+    <div id="screen-quiz-2" class="screen p-5">
+        <div class="top-nav px-0"><i class="fa-solid fa-arrow-left text-xl cursor-pointer" onclick="showScreen('screen-quiz-1')"></i><div class="brand-font text-sm text-blue-400">MAXX AI</div><div class="w-5"></div></div>
+        <p class="text-xs text-gray-400 mb-1">Krok 2 z 3</p><div class="progress-bar"><div class="progress-fill" style="width: 66%"></div></div>
+        <h2 class="text-2xl mb-2">Z kim podróżujesz?</h2><p class="text-gray-400 text-sm mb-6">Dopasujemy wielkość samochodu.</p>
+        <p class="text-sm font-semibold mb-3 text-blue-400">ILE OSÓB BĘDZIE JECHAĆ?</p>
+        <div class="flex gap-2 mb-8">
+            <div class="option-pill" onclick="selectPill('passengers', '1-2', this)">1-2</div>
+            <div class="option-pill" onclick="selectPill('passengers', '3-4', this)">3-4</div>
+            <div class="option-pill" onclick="selectPill('passengers', '5', this)">5+</div>
+        </div>
+        <div class="mt-auto pt-6"><button class="btn-primary opacity-50 cursor-not-allowed" id="btn-next-2" onclick="nextQuizStep(3)" disabled>Dalej</button></div>
+    </div>
+
+    <div id="screen-quiz-3" class="screen p-5">
+        <div class="top-nav px-0"><i class="fa-solid fa-arrow-left text-xl cursor-pointer" onclick="showScreen('screen-quiz-2')"></i><div class="brand-font text-sm text-blue-400">MAXX AI</div><div class="w-5"></div></div>
+        <p class="text-xs text-gray-400 mb-1">Krok 3 z 3</p><div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
+        <h2 class="text-2xl mb-2">Prawie gotowe!</h2><p class="text-gray-400 text-sm mb-6">Jakie masz preferencje co do auta?</p>
+        <p class="text-sm font-semibold mb-3 text-blue-400">KLASA POJAZDU</p>
+        <div class="flex gap-2 mb-8" id="budget-options">
+            <div class="option-pill" onclick="selectPill('budget', 'premium', this)">Premium</div>
+            <div class="option-pill" onclick="selectPill('budget', 'premium', this)">Luksus</div>
+        </div>
+        <p class="text-sm font-semibold mb-3 text-blue-400">STYL JAZDY / CHARAKTER</p>
+        <div class="flex gap-2 mb-8" id="style-options">
+            <div class="option-pill" onclick="selectPill('style', 'calm', this)">Spokojny / Komfort</div>
+            <div class="option-pill" onclick="selectPill('style', 'dynamic', this)">Dynamiczny / Sport</div>
+        </div>
+        <div class="mt-auto pt-6"><button class="btn-primary opacity-50 cursor-not-allowed" id="btn-next-3" onclick="processAI()" disabled>Analizuj <i class="fa-solid fa-microchip ml-2"></i></button></div>
+    </div>
+
+    <div id="screen-processing" class="screen p-5 text-center flex-col justify-center items-center">
+        <div class="brand-font text-xl text-blue-500 mb-10 tracking-widest">MAXX AI</div>
+        <div class="ai-radar"><i class="fa-solid fa-brain text-4xl text-blue-500"></i></div>
+        <h2 class="text-2xl mt-8 mb-2">Analizuję dane...</h2><p class="text-gray-400" id="processing-text">Skanowanie pojemności i dostępności floty...</p>
+        <div class="mt-10 text-left w-full max-w-xs mx-auto text-xs text-gray-600 font-mono">
+            <div class="animate-pulse">> Uruchamianie algorytmu dopasowania...</div>
+            <div class="animate-pulse delay-75">> Weryfikacja bazy Maxx Rental-Cars...</div>
+            <div class="animate-pulse delay-150">> Generowanie propozycji i cen...</div>
+        </div>
+    </div>
+
+    <div id="screen-result" class="screen">
+        <div class="top-nav"><i class="fa-solid fa-arrow-left text-xl cursor-pointer" onclick="showScreen('screen-splash')"></i><div class="brand-font text-sm text-blue-400">WYNIKI AI</div><i class="fa-regular fa-heart text-xl"></i></div>
+        <div class="px-5 text-center mb-2">
+            <h2 class="text-2xl mb-1 text-white font-bold">Twoje propozycje AI</h2><p class="text-gray-400 text-sm">Oto idealne auta dopasowane do Ciebie</p>
+            <div class="bg-blue-900/20 border border-blue-500/30 rounded-full inline-block px-4 py-1 mt-3 mb-2"><span class="text-xs text-gray-400">Zakres budżetu:</span> <span id="budget-range" class="font-bold text-blue-400 text-sm">0 zł - 0 zł</span></div>
+        </div>
+        <div class="px-5 pb-6 overflow-y-auto flex-1" id="proposals-container"></div>
+        <div class="px-5 pb-4 mt-auto"><p class="text-center text-xs text-gray-500 cursor-pointer underline decoration-gray-600" onclick="startAIQuiz()">Ponów dopasowanie AI</p></div>
+    </div>
+
+    <div id="screen-payment" class="screen p-5">
+        <div class="top-nav px-0 mb-4"><i class="fa-solid fa-arrow-left text-xl cursor-pointer" onclick="showScreen('screen-result')"></i><div class="brand-font text-sm text-white">POTWIERDZENIE</div><div class="w-5"></div></div>
+        <h2 class="text-xl mb-4 font-bold">Podsumowanie rezerwacji</h2>
+        <div class="flex items-center gap-4 mb-4 border-b border-gray-800 pb-4">
+            <img id="payment-car-img" src="" class="w-20 h-14 object-cover rounded-md" alt="Car">
+            <div><p class="font-bold text-sm" id="payment-car-name">Auto</p><p class="text-xs text-blue-400">Odbiór natychmiastowy</p></div>
+        </div>
+        <div class="bg-gray-800/60 rounded-xl p-4 mb-4 flex justify-between border border-gray-700">
+            <div><p class="text-xs text-gray-400 mb-1">Odbiór (Dziś)</p><p class="font-bold">10:00</p></div>
+            <div class="text-blue-500 flex flex-col justify-center"><i class="fa-solid fa-arrow-right-long"></i><p class="text-[10px] mt-1 text-center">2 doby</p></div>
+            <div class="text-right"><p class="text-xs text-gray-400 mb-1">Zwrot (+2 dni)</p><p class="font-bold">10:00</p></div>
+        </div>
+        <div class="bg-gray-800/60 rounded-xl p-4 mb-6 border border-gray-700 flex items-center gap-3">
+            <i class="fa-solid fa-location-dot text-blue-500 text-xl"></i>
+            <div><p class="text-sm font-bold">Katowice, Dworzec PKP</p><p class="text-xs text-gray-400">Odbiór bezobsługowy 24/7</p></div>
+        </div>
+        <div class="flex justify-between items-center mb-2"><p class="text-gray-400">Koszt wynajmu</p><p class="font-bold" id="payment-cost">0 zł</p></div>
+        <div class="flex justify-between items-center mb-4"><p class="text-gray-400">Opłata serwisowa</p><p class="font-bold">0 zł <span class="line-through text-xs text-gray-600 ml-1">50 zł</span></p></div>
+        <div class="border-t border-gray-700 my-4"></div>
+        <div class="flex justify-between items-center mb-8"><p class="font-bold text-lg">SUMA</p><p class="font-bold text-2xl text-blue-400" id="payment-total">0 zł</p></div>
+        <p class="text-xs font-semibold mb-3 text-gray-400">METODA PŁATNOŚCI</p>
+        <div class="bg-gray-800/60 rounded-xl border border-gray-700 overflow-hidden mb-8">
+            <div class="p-4 border-b border-gray-700 flex items-center gap-3 bg-blue-900/20 cursor-pointer">
+                <div class="w-4 h-4 rounded-full bg-blue-500 flex justify-center items-center"><div class="w-1.5 h-1.5 rounded-full bg-white"></div></div>
+                <div class="font-bold flex items-center gap-2"><span class="bg-black text-white px-2 py-0.5 rounded text-xs uppercase tracking-wider">Blik</span> BLIK</div>
+            </div>
+            <div class="p-4 flex items-center gap-3 cursor-pointer">
+                <div class="w-4 h-4 rounded-full border border-gray-500"></div><div class="text-gray-400 flex items-center gap-2"><i class="fa-regular fa-credit-card"></i> Karta .... 1234</div>
+            </div>
+        </div>
+        <button class="btn-primary py-4 text-lg" onclick="confirmPayment()">Zapłać i potwierdź</button>
+    </div>
+
+    <div id="screen-success" class="screen p-5 flex-col">
+        <div class="top-nav px-0"><i class="fa-solid fa-arrow-left text-xl cursor-pointer" onclick="showScreen('screen-splash')"></i><div class="brand-font text-sm text-blue-400">ODBIÓR AUTA</div><div class="w-5"></div></div>
+        <div id="success-anim" class="flex flex-col items-center justify-center py-10 transition-all duration-500">
+            <div class="w-20 h-20 rounded-full bg-green-500/20 border-2 border-green-500 flex justify-center items-center mb-4"><i class="fa-solid fa-check text-4xl text-green-500"></i></div>
+            <h2 class="text-2xl font-bold mb-1">Rezerwacja potwierdzona!</h2><p class="text-gray-400 text-sm">Nr ref: MAXX-2026-00842</p>
+        </div>
+        <div id="phygital-section" class="flex-1 flex flex-col opacity-0 transition-opacity duration-1000 delay-500">
+            <h3 class="text-xl font-bold mb-2">Czas na jazdę!</h3><p class="text-sm text-gray-400 mb-6">Podejdź do auta. Bluetooth połączy się automatycznie.</p>
+            <div class="bg-gray-800/80 rounded-xl p-4 flex gap-4 items-center mb-6 border border-gray-700">
+                <div class="w-20 h-16 bg-black rounded overflow-hidden shrink-0"><img id="final-car-img" src="" class="w-full h-full object-cover opacity-80" alt="Car"></div>
+                <div><p class="font-bold" id="final-car-name">Auto</p><p class="text-xs text-blue-400 font-mono mt-1 px-2 py-0.5 bg-blue-900/30 rounded inline-block">SK 12345</p></div>
+            </div>
+            <div class="mb-2"><p class="text-xs font-semibold text-gray-400 mb-1">LOKALIZACJA</p><p class="text-sm">Parking Katowice Dworzec PKP</p><p class="text-xs text-gray-400"><i class="fa-solid fa-location-arrow text-blue-400 mr-1"></i> Poziom -1, Stanowisko A23</p></div>
+            <div class="w-full h-32 bg-gray-700 rounded-xl mb-6 relative overflow-hidden border border-gray-600">
+                <div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(#4b5563 1px, transparent 1px); background-size: 10px 10px;"></div>
+                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"><div class="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center animate-ping absolute"></div><i class="fa-solid fa-street-view text-2xl text-blue-400 relative z-10 drop-shadow-lg"></i></div>
+                <div class="absolute top-1/3 left-2/3 transform -translate-x-1/2 -translate-y-1/2"><i class="fa-solid fa-car-side text-xl text-green-400 drop-shadow-lg"></i></div>
+                <svg class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg"><path d="M 200 64 L 250 40" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4" fill="none" opacity="0.6"/></svg>
+            </div>
+            <button id="unlock-btn" class="btn-primary py-4 text-lg mt-auto flex justify-center items-center gap-2 bg-blue-600" onclick="unlockCar()"><i class="fa-solid fa-lock" id="lock-icon"></i> Otwórz auto (Bluetooth)</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- BAZA WIEDZY AI (Dopasowana 1:1 do screena z nazwami plików) ---
+    const fleet = [
+        // ====== AUTA STRICTE 2-OSOBOWE (SUPERSPORT) ======
+        { id: 'huracan', name: 'Lamborghini Huracan', specs: '5.2 V10 • Automat • AWD', price: 2490, image: 'Lamborghini Huracan.jpeg', tags: { purpose: ['sport'], maxPax: 2, budget: 'supersport', style: 'dynamic' }, reasons: ["Wolnossące V10", "Drapieżny design"] },
+        { id: 'ferrari458', name: 'Ferrari 458 Italia', specs: '4.5 V8 • Automat • RWD', price: 2290, image: 'Ferrari 458 Italia.jpg', tags: { purpose: ['sport'], maxPax: 2, budget: 'supersport', style: 'dynamic' }, reasons: ["Kultowe brzmienie", "Włoska precyzja"] },
+        { id: 'bentley', name: 'Bentley Continental GT V8 S', specs: '4.0 V8 • Automat • AWD', price: 2990, image: 'Bentley Continental GT V8 S.jpg', tags: { purpose: ['route', 'sport'], maxPax: 4, budget: 'premium', style: 'calm' }, reasons: ["Arystokratyczna moc", "Ręczne wykończenie"] },
+
+        // ====== SPORTOWE SUV-y ======
+        { id: 'g63', name: 'Mercedes-AMG G63', specs: '4.0 V8 • Automat • 4MATIC', price: 1890, image: 'Mercedes-AMG G63.jpg', tags: { purpose: ['mountains', 'sport'], maxPax: 5, budget: 'premium', style: 'dynamic' }, reasons: ["Kultowy G-Wagon", "V8 BiTurbo"] },
+        { id: 'rsq8', name: 'Audi RS Q8 Performance', specs: '4.0 V8 • Automat • Quattro', price: 1890, image: 'Audi RS Q8 Performance.jpg', tags: { purpose: ['sport', 'mountains'], maxPax: 5, budget: 'premium', style: 'dynamic' }, reasons: ["640 KM (Performance)", "Geny Urusa"] },
+        { id: 'x5m', name: 'BMW X5 M', specs: '4.4 V8 • Automat • M xDrive', price: 1850, image: 'BMW X5M.jpg', tags: { purpose: ['sport', 'mountains'], maxPax: 5, budget: 'premium', style: 'dynamic' }, reasons: ["Moc V8", "SUV na tor"] },
+        { id: 'rr_sv_lwb', name: 'Range Rover SV LWB', specs: '4.4 V8 BiTurbo • Automat • AWD', price: 1690, image: 'Range Rover SV LWB.jpeg', tags: { purpose: ['sport', 'mountains', 'route'], maxPax: 7, budget: 'premium', style: 'dynamic' }, reasons: ["Najwyższa wersja SV", "Sportowe osiągi V8 i 7 miejsc"] },
+
+        // ====== AUTA 4/5-OSOBOWE SPORTOWE ======
+        { id: 'rs6', name: 'Audi RS6 Avant', specs: '4.0 V8 • Automat • Quattro', price: 1490, image: 'Audi RS6.jpg', tags: { purpose: ['route', 'sport'], maxPax: 5, budget: 'premium', style: 'dynamic' }, reasons: ["600 KM mocy", "Uniwersalne kombi"] },
+        { id: 'm3t', name: 'BMW M3 Touring', specs: '3.0 R6 • Automat • xDrive', price: 1290, image: 'BMW M3 TOURING.jpg', tags: { purpose: ['route', 'sport'], maxPax: 5, budget: 'premium', style: 'dynamic' }, reasons: ["M-Performance", "Napęd xDrive"] },
+        { id: 'm2', name: 'BMW M2 CS', specs: '3.0 R6 • Automat • RWD', price: 690, image: 'BMW M2 CS.jpg', tags: { purpose: ['city', 'sport'], maxPax: 4, budget: 'premium', style: 'dynamic' }, reasons: ["Zwinność gokarta", "Czyste emocje RWD"] },
+        { id: 'yaris', name: 'Toyota GR Yaris', specs: '1.6 T • Manual • 4x4', price: 299, image: 'Toyota GR Yaris.jpg', tags: { purpose: ['city', 'sport'], maxPax: 4, budget: 'premium', style: 'dynamic' }, reasons: ["Rajdowe geny", "Unikalny 4x4"] },
+
+        // ====== LUKSUSOWE LIMUZYNY ======
+        { id: 'bmw7', name: 'BMW Seria 7', specs: '3.0 R6 • Automat • xDrive', price: 1450, image: 'BMW 7.jpg', tags: { purpose: ['route'], maxPax: 5, budget: 'premium', style: 'calm' }, reasons: ["Kino domowe", "Luksusowa limuzyna"] },
+        { id: 'mercs', name: 'Mercedes-AMG S63 E-Performance', specs: '4.0 V8 PHEV • Automat • 4MATIC+', price: 1650, image: 'Mercedes-AMG S63 E-Performance.jpg', tags: { purpose: ['route'], maxPax: 5, budget: 'premium', style: 'calm' }, reasons: ["Potężna hybryda V8", "Prestiż S-Klasy"] },
+        { id: 'a8', name: 'Audi A8', specs: '3.0 TFSI • Automat • Quattro', price: 1400, image: 'AUDI A8.jpg', tags: { purpose: ['route'], maxPax: 5, budget: 'premium', style: 'calm' }, reasons: ["Technologia Matrix", "Dyskretny luksus"] },
+
+        // ====== KOMFORTOWE TERENÓWKI ======
+        { id: 'tlc', name: 'Toyota Land Cruiser', specs: '2.8 D • Automat • 4x4', price: 590, image: 'TOYOTA LAND CRUSIER.jpg', tags: { purpose: ['mountains', 'route'], maxPax: 7, budget: 'premium', style: 'calm' }, reasons: ["Niezawodność", "7 miejsc"] },
+        { id: 'defender', name: 'Land Rover Defender Trophy', specs: '3.0 R6 • Automat • AWD', price: 890, image: 'Land Rover Defender Trophy Edition.jpg', tags: { purpose: ['mountains', 'route'], maxPax: 7, budget: 'premium', style: 'calm' }, reasons: ["Limitowana edycja", "Kultowy off-road"] }
+    ];
+
+    let userState = { purpose: null, passengers: null, budget: null, style: null };
+
+    function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+
+    function startAIQuiz() {
+        userState = { purpose: null, passengers: null, budget: null, style: null };
+        document.querySelectorAll('.option-card, .option-pill').forEach(el => el.classList.remove('selected'));
+        document.getElementById('btn-next-1').disabled = true; document.getElementById('btn-next-1').classList.add('opacity-50');
+        showScreen('screen-quiz-1');
+    }
+
+    function selectOption(cat, val, el) {
+        userState[cat] = val;
+        el.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById('btn-next-1').disabled = false; document.getElementById('btn-next-1').classList.remove('opacity-50');
+    }
+
+    function selectPill(cat, val, el) {
+        userState[cat] = val;
+        el.parentElement.querySelectorAll('.option-pill').forEach(p => p.classList.remove('selected'));
+        el.classList.add('selected');
+        if (cat === 'passengers') { document.getElementById('btn-next-2').disabled = false; document.getElementById('btn-next-2').classList.remove('opacity-50'); }
+        if (userState.budget && userState.style) { document.getElementById('btn-next-3').disabled = false; document.getElementById('btn-next-3').classList.remove('opacity-50'); }
+    }
+
+    function nextQuizStep(step) {
+        if (step === 3) {
+            const b = document.getElementById('budget-options');
+            if (userState.purpose === 'sport') {
+                b.innerHTML = `<div class="option-pill" onclick="selectPill('budget', 'premium', this)">Sportowe</div><div class="option-pill" onclick="selectPill('budget', 'supersport', this)">Supersport</div>`;
+            } else {
+                b.innerHTML = `<div class="option-pill" onclick="selectPill('budget', 'premium', this)">Premium</div><div class="option-pill" onclick="selectPill('budget', 'premium', this)">Luksus</div>`;
+            }
+        }
+        showScreen(`screen-quiz-${step}`);
+    }
+
+    function calculateScore(car, prefs) {
+        let s = 0;
+        if (car.tags.purpose.includes(prefs.purpose)) s += 3;
+        let req = prefs.passengers === '5' ? 6 : (prefs.passengers === '3-4' ? 4 : 2);
+        if (car.tags.maxPax < req) return -1000;
+        
+        if (req === 2 && car.tags.maxPax === 2) s += 2.5;
+        if (req === 4 && car.tags.maxPax === 4) s += 1.5;
+
+        if (car.tags.budget === prefs.budget) s += 4; 
+        if (car.tags.style === prefs.style) s += 1;
+        
+        s += Math.random() * 0.5;
+        return s;
+    }
+
+    function processAI() {
+        showScreen('screen-processing');
+        setTimeout(() => {
+            let sc = fleet.map(c => ({ c: c, s: calculateScore(c, userState) }));
+            sc.sort((a, b) => b.s - a.s);
+            let valid = sc.filter(c => c.s > -500);
+            if (valid.length === 0) { let req = userState.passengers === '5' ? 6 : 4; valid = fleet.filter(c => c.tags.maxPax >= req).map(c => ({c: c, s: 0})); }
+            let top = valid.slice(0, 2).map(v => v.c);
+            renderResults(top);
+            showScreen('screen-result');
+        }, 3000);
+    }
+
+    function renderResults(cars) {
+        const c = document.getElementById('proposals-container'); c.innerHTML = '';
+        let prices = cars.map(x => x.price);
+        document.getElementById('budget-range').innerText = `${Math.min(...prices)} zł - ${Math.max(...prices)} zł`;
+        cars.forEach((car, i) => {
+            let label = i === 0 ? 'Rekomendacja #1' : 'Alternatywa';
+            c.innerHTML += `
+            <div class="proposal-card">
+                <div class="proposal-img-wrapper"><img src="${car.image}" alt="${car.name}"><div class="absolute top-3 left-3 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded">${label}</div></div>
+                <div class="p-4">
+                    <h3 class="text-xl font-bold text-white">${car.name}</h3><p class="text-xs text-blue-400 mb-2">${car.specs}</p>
+                    <ul class="text-[11px] text-gray-400 mb-4"><li><i class="fa-solid fa-check text-green-500 mr-1"></i> ${car.reasons[0]}</li><li><i class="fa-solid fa-check text-green-500 mr-1"></i> ${car.reasons[1]}</li></ul>
+                    <div class="flex items-center justify-between"><div><span class="text-2xl font-bold text-white">${car.price}</span><span class="text-xs text-gray-500"> zł / doba</span></div><button class="bg-blue-600 text-white text-sm font-bold py-2 px-5 rounded-lg" onclick="book('${car.id}')">Wybierz</button></div>
+                </div>
+            </div>`;
+        });
+    }
+
+    function book(id) {
+        let car = fleet.find(x => x.id === id);
+        document.getElementById('payment-car-img').src = car.image; document.getElementById('payment-car-name').innerText = car.name;
+        document.getElementById('payment-cost').innerText = `${car.price * 2} zł`; document.getElementById('payment-total').innerText = `${car.price * 2} zł`;
+        document.getElementById('final-car-img').src = car.image; document.getElementById('final-car-name').innerText = car.name;
+        showScreen('screen-payment');
+    }
+
+    function confirmPayment() {
+        showScreen('screen-success');
+        setTimeout(() => { document.getElementById('success-anim').classList.add('scale-75', 'opacity-50'); document.getElementById('phygital-section').classList.remove('opacity-0'); document.getElementById('phygital-section').classList.add('opacity-100'); }, 1500);
+    }
+
+    function unlockCar() {
+        const b = document.getElementById('unlock-btn'); b.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Łączenie po Bluetooth...`;
+        setTimeout(() => { b.innerHTML = `<i class="fa-solid fa-lock-open text-green-400"></i> Auto Otwarte! Szerokiej drogi`; b.classList.replace('bg-blue-600', 'bg-gray-800'); }, 2000);
+    }
+</script>
+</body>
+</html>
