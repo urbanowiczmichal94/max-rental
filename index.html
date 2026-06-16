@@ -48,7 +48,42 @@
 <div id="app-container">
     <div id="screen-splash" class="screen active" style="justify-content: flex-end; padding: 30px;">
         <div class="splash-bg"></div><div class="splash-gradient"></div>
-        <div class="mb-auto mt-10 text-center"><h1 class="text-4xl text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600 tracking-wider">MAXX</h1><p class="brand-font text-sm tracking-widest text-blue-400">RENTAL-CARS</p></div>
+        <div class="mt-10 flex justify-center">
+            <svg viewBox="0 0 320 124" role="img" aria-label="MAXX Rental-Cars" style="width:282px;max-width:82%;height:auto;">
+                <defs><linearGradient id="maxxLogoB" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7cb0f8"/><stop offset="1" stop-color="#1d4ed8"/></linearGradient></defs>
+                <rect x="22" y="32" width="40" height="5" rx="2.5" fill="#2563eb" opacity="0.55"/>
+                <rect x="14" y="46" width="54" height="5" rx="2.5" fill="#2563eb" opacity="0.38"/>
+                <rect x="26" y="60" width="30" height="5" rx="2.5" fill="#2563eb" opacity="0.26"/>
+                <g transform="skewX(-8)"><text x="180" y="64" text-anchor="middle" font-family="Montserrat,sans-serif" font-weight="800" font-size="46" letter-spacing="1" fill="url(#maxxLogoB)">MAXX</text></g>
+                <text x="162" y="96" text-anchor="middle" font-family="Montserrat,sans-serif" font-weight="700" font-size="11" letter-spacing="8" fill="#7da7e0">RENTAL CARS</text>
+            </svg>
+        </div>
+        <div class="flex-1 flex items-center justify-center px-2 min-h-0">
+            <svg viewBox="0 0 320 150" role="img" aria-label="Sportowe auto" style="width:100%;max-width:340px;height:auto;opacity:0.95;">
+                <defs>
+                    <linearGradient id="carBody" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b82f6"/><stop offset="1" stop-color="#1d4ed8"/></linearGradient>
+                    <radialGradient id="carGlow" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#2563eb" stop-opacity="0.45"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></radialGradient>
+                </defs>
+                <ellipse cx="165" cy="90" rx="150" ry="46" fill="url(#carGlow)"/>
+                <rect x="6" y="64" width="46" height="5" rx="2.5" fill="#2563eb" opacity="0.45"/>
+                <rect x="0" y="78" width="60" height="5" rx="2.5" fill="#2563eb" opacity="0.30"/>
+                <rect x="10" y="92" width="34" height="5" rx="2.5" fill="#2563eb" opacity="0.20"/>
+                <ellipse cx="165" cy="122" rx="120" ry="9" fill="#2563eb" opacity="0.22"/>
+                <path d="M40,98 L40,86 C44,76 56,72 72,71 L122,68 C134,67 140,52 156,49 L196,46 C210,45 218,52 232,58 L280,64 C290,66 292,74 291,84 L291,98 Z" fill="url(#carBody)"/>
+                <path d="M40,86 C44,76 56,72 72,71 L122,68 C134,67 140,52 156,49 L196,46 C210,45 218,52 232,58 L280,64 C290,66 292,74 291,84" fill="none" stroke="#9cc3f7" stroke-width="1.5" stroke-linecap="round" opacity="0.65"/>
+                <polygon points="150,51 192,48 206,56 159,59" fill="#0a1424" opacity="0.55"/>
+                <polygon points="151,52 176,50 173,57 156,58" fill="#cfe2fb" opacity="0.12"/>
+                <circle cx="92" cy="98" r="25" fill="#070d18"/>
+                <circle cx="232" cy="98" r="25" fill="#070d18"/>
+                <circle cx="92" cy="98" r="22" fill="#0a0f1a"/>
+                <circle cx="232" cy="98" r="22" fill="#0a0f1a"/>
+                <circle cx="92" cy="98" r="11" fill="none" stroke="#93c0f5" stroke-width="2.5"/>
+                <circle cx="232" cy="98" r="11" fill="none" stroke="#93c0f5" stroke-width="2.5"/>
+                <circle cx="92" cy="98" r="3.2" fill="#93c0f5"/>
+                <circle cx="232" cy="98" r="3.2" fill="#93c0f5"/>
+                <circle cx="46" cy="82" r="3.4" fill="#cfe2fb" opacity="0.9"/>
+            </svg>
+        </div>
         <div class="mb-10"><h2 class="text-4xl leading-tight mb-4">Wynajmij auto<br><span class="text-blue-500">w 60 sekund.</span></h2><p class="text-gray-400 text-lg">Bez rozmów. Bez stresu.<br>Po prostu jedź.</p></div>
         <button class="btn-primary mb-4 flex justify-center items-center gap-2" onclick="startAIQuiz()">Zacznij teraz <i class="fa-solid fa-arrow-right"></i></button>
         <p class="text-center text-sm text-gray-500">Masz konto? <span class="text-blue-400 font-semibold">Zaloguj się</span></p>
@@ -87,7 +122,8 @@
         <div class="flex gap-2 mb-8">
             <div class="option-pill" onclick="selectPill('passengers', '1-2', this)">1-2</div>
             <div class="option-pill" onclick="selectPill('passengers', '3-4', this)">3-4</div>
-            <div class="option-pill" onclick="selectPill('passengers', '5', this)">5+</div>
+            <div class="option-pill" onclick="selectPill('passengers', '5', this)">5</div>
+            <div class="option-pill" onclick="selectPill('passengers', '6-7', this)">6-7</div>
         </div>
         <div class="mt-auto pt-6"><button class="btn-primary opacity-50 cursor-not-allowed" id="btn-next-2" onclick="nextQuizStep(3)" disabled>Dalej</button></div>
     </div>
@@ -99,7 +135,7 @@
         <p class="text-sm font-semibold mb-3 text-blue-400">KLASA POJAZDU</p>
         <div class="flex gap-2 mb-8" id="budget-options">
             <div class="option-pill" onclick="selectPill('budget', 'premium', this)">Premium</div>
-            <div class="option-pill" onclick="selectPill('budget', 'premium', this)">Luksus</div>
+            <div class="option-pill" onclick="selectPill('budget', 'luxury', this)">Luksus</div>
         </div>
         <p class="text-sm font-semibold mb-3 text-blue-400">STYL JAZDY / CHARAKTER</p>
         <div class="flex gap-2 mb-8" id="style-options">
@@ -196,10 +232,10 @@
         { id: 'bentley', name: 'Bentley Continental GT V8 S', specs: '4.0 V8 • Automat • AWD', price: 2990, image: 'Bentley Continental GT V8 S.jpg', tags: { purpose: ['route', 'sport'], maxPax: 4, budget: 'premium', style: 'calm' }, reasons: ["Arystokratyczna moc", "Ręczne wykończenie"] },
 
         // ====== SPORTOWE SUV-y ======
-        { id: 'g63', name: 'Mercedes-AMG G63', specs: '4.0 V8 • Automat • 4MATIC', price: 1890, image: 'Mercedes-AMG G63.jpg', tags: { purpose: ['mountains', 'sport'], maxPax: 5, budget: 'premium', style: 'dynamic' }, reasons: ["Kultowy G-Wagon", "V8 BiTurbo"] },
+        { id: 'g63', name: 'Mercedes-AMG G63', specs: '4.0 V8 • Automat • 4MATIC', price: 1890, image: 'Mercedes-AMG G63.jpg', tags: { purpose: ['mountains', 'sport'], maxPax: 5, budget: 'luxury', style: 'dynamic' }, reasons: ["Kultowy G-Wagon", "V8 BiTurbo"] },
         { id: 'rsq8', name: 'Audi RS Q8 Performance', specs: '4.0 V8 • Automat • Quattro', price: 1890, image: 'Audi RS Q8 Performance.jpg', tags: { purpose: ['sport', 'mountains'], maxPax: 5, budget: 'premium', style: 'dynamic' }, reasons: ["640 KM (Performance)", "Geny Urusa"] },
         { id: 'x5m', name: 'BMW X5 M', specs: '4.4 V8 • Automat • M xDrive', price: 1850, image: 'BMW X5M.jpg', tags: { purpose: ['sport', 'mountains'], maxPax: 5, budget: 'premium', style: 'dynamic' }, reasons: ["Moc V8", "SUV na tor"] },
-        { id: 'rr_sv_lwb', name: 'Range Rover SV LWB', specs: '4.4 V8 BiTurbo • Automat • AWD', price: 1690, image: 'Range Rover SV LWB.jpeg', tags: { purpose: ['sport', 'mountains', 'route'], maxPax: 7, budget: 'premium', style: 'dynamic' }, reasons: ["Najwyższa wersja SV", "Sportowe osiągi V8 i 7 miejsc"] },
+        { id: 'rr_sv_lwb', name: 'Range Rover SV LWB', specs: '4.4 V8 BiTurbo • Automat • AWD', price: 1690, image: 'Range Rover SV LWB.jpeg', tags: { purpose: ['sport', 'mountains', 'route'], maxPax: 7, budget: 'luxury', style: 'dynamic' }, reasons: ["Najwyższa wersja SV", "Sportowe osiągi V8 i 7 miejsc"] },
 
         // ====== AUTA 4/5-OSOBOWE SPORTOWE ======
         { id: 'rs6', name: 'Audi RS6 Avant', specs: '4.0 V8 • Automat • Quattro', price: 1490, image: 'Audi RS6.jpg', tags: { purpose: ['route', 'sport'], maxPax: 5, budget: 'premium', style: 'dynamic' }, reasons: ["600 KM mocy", "Uniwersalne kombi"] },
@@ -208,9 +244,9 @@
         { id: 'yaris', name: 'Toyota GR Yaris', specs: '1.6 T • Manual • 4x4', price: 299, image: 'Toyota GR Yaris.jpg', tags: { purpose: ['city', 'sport'], maxPax: 4, budget: 'premium', style: 'dynamic' }, reasons: ["Rajdowe geny", "Unikalny 4x4"] },
 
         // ====== LUKSUSOWE LIMUZYNY ======
-        { id: 'bmw7', name: 'BMW Seria 7', specs: '3.0 R6 • Automat • xDrive', price: 1450, image: 'BMW 7.jpg', tags: { purpose: ['route'], maxPax: 5, budget: 'premium', style: 'calm' }, reasons: ["Kino domowe", "Luksusowa limuzyna"] },
-        { id: 'mercs', name: 'Mercedes-AMG S63 E-Performance', specs: '4.0 V8 PHEV • Automat • 4MATIC+', price: 1650, image: 'Mercedes-AMG S63 E-Performance.jpg', tags: { purpose: ['route'], maxPax: 5, budget: 'premium', style: 'calm' }, reasons: ["Potężna hybryda V8", "Prestiż S-Klasy"] },
-        { id: 'a8', name: 'Audi A8', specs: '3.0 TFSI • Automat • Quattro', price: 1400, image: 'AUDI A8.jpg', tags: { purpose: ['route'], maxPax: 5, budget: 'premium', style: 'calm' }, reasons: ["Technologia Matrix", "Dyskretny luksus"] },
+        { id: 'bmw7', name: 'BMW Seria 7', specs: '3.0 R6 • Automat • xDrive', price: 1450, image: 'BMW 7.jpg', tags: { purpose: ['route'], maxPax: 5, budget: 'luxury', style: 'calm' }, reasons: ["Kino domowe", "Luksusowa limuzyna"] },
+        { id: 'mercs', name: 'Mercedes-AMG S63 E-Performance', specs: '4.0 V8 PHEV • Automat • 4MATIC+', price: 1650, image: 'Mercedes-AMG S63 E-Performance.jpg', tags: { purpose: ['route'], maxPax: 5, budget: 'luxury', style: 'calm' }, reasons: ["Potężna hybryda V8", "Prestiż S-Klasy"] },
+        { id: 'a8', name: 'Audi A8', specs: '3.0 TFSI • Automat • Quattro', price: 1400, image: 'AUDI A8.jpg', tags: { purpose: ['route'], maxPax: 5, budget: 'luxury', style: 'calm' }, reasons: ["Technologia Matrix", "Dyskretny luksus"] },
 
         // ====== KOMFORTOWE TERENÓWKI ======
         { id: 'tlc', name: 'Toyota Land Cruiser', specs: '2.8 D • Automat • 4x4', price: 590, image: 'TOYOTA LAND CRUSIER.jpg', tags: { purpose: ['mountains', 'route'], maxPax: 7, budget: 'premium', style: 'calm' }, reasons: ["Niezawodność", "7 miejsc"] },
@@ -249,7 +285,7 @@
             if (userState.purpose === 'sport') {
                 b.innerHTML = `<div class="option-pill" onclick="selectPill('budget', 'premium', this)">Sportowe</div><div class="option-pill" onclick="selectPill('budget', 'supersport', this)">Supersport</div>`;
             } else {
-                b.innerHTML = `<div class="option-pill" onclick="selectPill('budget', 'premium', this)">Premium</div><div class="option-pill" onclick="selectPill('budget', 'premium', this)">Luksus</div>`;
+                b.innerHTML = `<div class="option-pill" onclick="selectPill('budget', 'premium', this)">Premium</div><div class="option-pill" onclick="selectPill('budget', 'luxury', this)">Luksus</div>`;
             }
         }
         showScreen(`screen-quiz-${step}`);
@@ -258,11 +294,12 @@
     function calculateScore(car, prefs) {
         let s = 0;
         if (car.tags.purpose.includes(prefs.purpose)) s += 3;
-        let req = prefs.passengers === '5' ? 6 : (prefs.passengers === '3-4' ? 4 : 2);
+        let req = prefs.passengers === '6-7' ? 6 : (prefs.passengers === '5' ? 5 : (prefs.passengers === '3-4' ? 4 : 2));
         if (car.tags.maxPax < req) return -1000;
         
         if (req === 2 && car.tags.maxPax === 2) s += 2.5;
         if (req === 4 && car.tags.maxPax === 4) s += 1.5;
+        if (req === 5 && car.tags.maxPax === 5) s += 1.5;
 
         if (car.tags.budget === prefs.budget) s += 4; 
         if (car.tags.style === prefs.style) s += 1;
@@ -277,7 +314,7 @@
             let sc = fleet.map(c => ({ c: c, s: calculateScore(c, userState) }));
             sc.sort((a, b) => b.s - a.s);
             let valid = sc.filter(c => c.s > -500);
-            if (valid.length === 0) { let req = userState.passengers === '5' ? 6 : 4; valid = fleet.filter(c => c.tags.maxPax >= req).map(c => ({c: c, s: 0})); }
+            if (valid.length === 0) { let req = userState.passengers === '6-7' ? 6 : (userState.passengers === '5' ? 5 : 4); valid = fleet.filter(c => c.tags.maxPax >= req).map(c => ({c: c, s: 0})); }
             let top = valid.slice(0, 2).map(v => v.c);
             renderResults(top);
             showScreen('screen-result');
